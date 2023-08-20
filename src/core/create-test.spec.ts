@@ -81,6 +81,10 @@ vi.mock("./util", () => ({
 }));
 
 describe("removeConstructorAssignment", () => {
+  afterAll(() => {
+    vi.resetAllMocks();
+  });
+
   it("should work", () => {
     expect(true).toBe(true);
   });

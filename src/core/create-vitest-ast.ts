@@ -52,6 +52,10 @@ export const createVitestAst = (payload: DeDupedParsePayload): Node => {
         : payload.exports
             .map(
               (e) => `describe("${e}", () => {
+    afterAll(() => {
+      vi.resetAllMocks();
+    });
+
     it("should work", () => {
       expect(true).toBe(true);
     });
