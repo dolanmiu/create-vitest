@@ -32,6 +32,24 @@ export const createVitestAst = (payload: DeDupedParsePayload): Node => {
             4
           ).replace(/["']/g, "")}));`
       ),
+      "\n",
+      payload.exports.length > 1
+        ? `describe("my-awesome-tests", () => {
+    afterAll(() => {
+      vi.resetAllMocks();
+    });
+
+    ${payload.exports
+      .map(
+        (e) => `describe("${e}", () => {
+      it("should work", () => {
+        expect(true).toBe(true);
+      });
+    });`
+      )
+      .join("\n\n")}
+})`
+        : "",
     ],
   });
 
@@ -45,7 +63,10 @@ const createMockObject = (
   propertyAccess: Record<string, Set<string>>
 ) => {
   const mock = {
-    default: i.defaultImports.length > 0 ? "vi.fn()" : undefined,
+    default:
+      i.defaultImports.length > 0
+        ? createImportObject(i.defaultImports, propertyAccess)
+        : undefined,
     ...createImportObject(i.namespaceImports, propertyAccess),
     ...(i.namedImports.length > 0
       ? i.namedImports.reduce(

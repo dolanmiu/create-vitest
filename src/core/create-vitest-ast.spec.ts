@@ -53,6 +53,7 @@ describe("createVitestAst", () => {
         ff: new Set(["wow", "world"]),
         path: new Set(["join"]),
         process: new Set(["cwd"]),
+        viDefault: new Set(["awesome"]),
       },
       exports: [],
     });
@@ -61,10 +62,14 @@ describe("createVitestAst", () => {
       .toEqual(`import { vi, describe, it, expect, afterAll, beforeAll } from "vitest";
 
 vi.mock("path", () => ({
-    default: vi.fn()
+    default: {
+        join: vi.fn()
+    }
 }));
 vi.mock("vitest", () => ({
-    default: vi.fn(),
+    default: {
+        awesome: vi.fn()
+    },
     vi: vi.fn(),
     describe: vi.fn(),
     it: vi.fn(),
@@ -76,9 +81,10 @@ vi.mock("test", () => ({
     world: vi.fn()
 }));
 vi.mock("my-module", () => ({
-    default: vi.fn()
+    default: {}
 }));
 vi.mock("module-name", () => ({}));
+
 `);
   });
 });

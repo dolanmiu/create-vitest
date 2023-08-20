@@ -11,6 +11,7 @@ export const getPostCssConfig = (): any | undefined => {
   ff.wow();
   ff.world();
   coolModule.hello();
+  viDefault.awesome();
   try {
     const file = require(path.join(process.cwd(), "postcss.config.js"));
 

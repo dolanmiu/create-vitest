@@ -67,6 +67,7 @@ describe("traverse", () => {
         ff: new Set(["wow", "world"]),
         path: new Set(["join"]),
         process: new Set(["cwd"]),
+        viDefault: new Set(["awesome"]),
       },
       exports: ["getPostCssConfig", "postCssPluginsToArray"],
     });

@@ -12,10 +12,14 @@ describe("createTest", () => {
       .toEqual(`import { vi, describe, it, expect, afterAll, beforeAll } from "vitest";
 
 vi.mock("path", () => ({
-  default: vi.fn(),
+  default: {
+    join: vi.fn(),
+  },
 }));
 vi.mock("vitest", () => ({
-  default: vi.fn(),
+  default: {
+    awesome: vi.fn(),
+  },
   vi: vi.fn(),
   describe: vi.fn(),
   it: vi.fn(),
@@ -27,10 +31,28 @@ vi.mock("test", () => ({
   world: vi.fn(),
 }));
 vi.mock("my-module", () => ({
-  default: vi.fn(),
+  default: {},
   hello: vi.fn(),
 }));
 vi.mock("module-name", () => ({}));
+
+describe("my-awesome-tests", () => {
+  afterAll(() => {
+    vi.resetAllMocks();
+  });
+
+  describe("getPostCssConfig", () => {
+    it("should work", () => {
+      expect(true).toBe(true);
+    });
+  });
+
+  describe("postCssPluginsToArray", () => {
+    it("should work", () => {
+      expect(true).toBe(true);
+    });
+  });
+});
 `);
   });
 });
