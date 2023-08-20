@@ -1,4 +1,4 @@
-#!/usr/bin/env
+// #!/usr/bin/env
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 import path from "path";

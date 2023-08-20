@@ -30,8 +30,8 @@ export default defineConfig({
     lib: {
       entry: [resolve(__dirname, "src/main.ts")],
       name: "create-vitest",
-      fileName: (format) => `${format}/index.js`,
-      formats: ["cjs", "es"],
+      fileName: () => `main.js`,
+      formats: ["es"],
     },
     outDir: resolve(__dirname, "dist"),
     rollupOptions: {
