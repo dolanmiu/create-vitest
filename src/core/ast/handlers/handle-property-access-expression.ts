@@ -8,6 +8,10 @@ export const handlePropertyAccessExpression = (
 ): ParsePayload => {
   const [object, property] = node.getChildrenOfKind(SyntaxKind.Identifier);
 
+  if (property === undefined) {
+    return parsePayload;
+  }
+
   return {
     ...parsePayload,
     propertyAccess: {

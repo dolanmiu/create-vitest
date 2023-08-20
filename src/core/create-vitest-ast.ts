@@ -49,7 +49,15 @@ export const createVitestAst = (payload: DeDupedParsePayload): Node => {
       )
       .join("\n\n")}
 })`
-        : "",
+        : payload.exports
+            .map(
+              (e) => `describe("${e}", () => {
+    it("should work", () => {
+      expect(true).toBe(true);
+    });
+  });`
+            )
+            .join("\n\n"),
     ],
   });
 
