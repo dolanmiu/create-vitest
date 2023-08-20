@@ -2,9 +2,29 @@ import { defineConfig } from "vitest/config";
 import { resolve } from "path";
 import dts from "vite-plugin-dts";
 import tsconfigPaths from "vite-tsconfig-paths";
+import { Plugin } from "vite";
+// import { nodePolyfills } from "vite-plugin-node-polyfills";
+import { builtinModules } from 'module';
+
+export const addShebangPlugin = (): Plugin => ({
+  name: "add-shebang",
+  enforce: "post",
+  generateBundle(_, bundle) {
+    for (const [, output] of Object.entries(bundle)) {
+      if (output.type === "chunk") {
+        output.code = `#!/usr/bin/env node\n${output.code}`;
+      }
+    }
+  },
+});
 
 export default defineConfig({
-  plugins: [dts(), tsconfigPaths()],
+  plugins: [
+    dts(),
+    tsconfigPaths(),
+    // nodePolyfills(),
+    addShebangPlugin(),
+  ],
   build: {
     sourcemap: true,
     lib: {
@@ -14,6 +34,9 @@ export default defineConfig({
       formats: ["cjs", "es"],
     },
     outDir: resolve(__dirname, "dist"),
+    rollupOptions: {
+      external: [...builtinModules, /^node:/],
+    },
   },
   test: {
     coverage: {
