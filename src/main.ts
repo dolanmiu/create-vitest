@@ -1,3 +1,4 @@
+#!/usr/bin/env
 import yargs from "yargs";
 import { hideBin } from "yargs/helpers";
 import path from "path";
@@ -5,6 +6,8 @@ import { createTest } from "./core/create-test";
 import fs from "fs";
 import inquirer, { QuestionCollection } from "inquirer";
 import chalk from "chalk";
+
+console.log(chalk.green("Welcome to create vitest!"));
 
 const {
   _: [fileName],

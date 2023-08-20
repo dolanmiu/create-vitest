@@ -3,7 +3,7 @@ import { resolve } from "path";
 import dts from "vite-plugin-dts";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { Plugin } from "vite";
-// import { nodePolyfills } from "vite-plugin-node-polyfills";
+import { nodePolyfills } from "vite-plugin-node-polyfills";
 import { builtinModules } from "module";
 
 export const addShebangPlugin = (): Plugin => ({
@@ -22,7 +22,7 @@ export default defineConfig({
   plugins: [
     dts(),
     tsconfigPaths(),
-    // nodePolyfills(),
+    nodePolyfills(),
     addShebangPlugin(),
   ],
   build: {
