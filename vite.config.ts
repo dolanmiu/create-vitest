@@ -4,7 +4,7 @@ import dts from "vite-plugin-dts";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { Plugin } from "vite";
 // import { nodePolyfills } from "vite-plugin-node-polyfills";
-import { builtinModules } from 'module';
+import { builtinModules } from "module";
 
 export const addShebangPlugin = (): Plugin => ({
   name: "add-shebang",
