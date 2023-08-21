@@ -1,6 +1,12 @@
 # Create Vitest
 
-> A command line utility tool to generate and scaffold vitest test files with good practices.
+> A command line utility tool to generate a vitest test (spec) file for a TypeScript file with best practices. Scaffold the test and mock all imports
+
+<p align="center">
+    <img src="./assets/logo.png" width="100%" height="500" />
+</p>
+
+---
 
 ## Usage
 

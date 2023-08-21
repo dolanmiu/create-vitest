@@ -14,7 +14,7 @@ console.log(chalk.bgBlueBright("                  Made by Dolan       "));
 console.log("");
 console.log(
   chalk.green(
-    "Generate a vitest test file for a TypeScript file. Scaffold the test and mock all imports"
+    "Generate a vitest test (spec) file for a TypeScript file with best practices. Scaffold the test and mock all imports"
   )
 );
 console.log(
