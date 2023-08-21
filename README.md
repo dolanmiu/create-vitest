@@ -3,7 +3,7 @@
 > A command line utility tool to generate a vitest test (spec) file for a TypeScript file with best practices. Scaffold the test and mock all imports
 
 <p align="center">
-    <img src="./assets/logo.png" height="500" />
+    <img src="./assets/logo.png" height="300" />
 </p>
 
 ---
