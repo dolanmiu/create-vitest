@@ -14,7 +14,8 @@
     "test": "vitest --ui",
     "test:ci": "vitest run",
     "prettier": "prettier --write .",
-    "run": "node dist/main.js"
+    "run": "node dist/main.js",
+    "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",
