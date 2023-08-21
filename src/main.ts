@@ -9,7 +9,9 @@ import chalk from "chalk";
 
 console.log(chalk.bgBlueBright.bold("                                      "));
 console.log(chalk.bgBlueBright.bold("   🧪 Welcome to create vitest! 🏗️     "));
-console.log("\n");
+console.log(chalk.bgBlueBright("                  Made by Dolan       "));
+
+console.log("");
 console.log(
   chalk.green(
     "Generate a vitest test file for a TypeScript file. Scaffold the test and mock all imports"
@@ -20,7 +22,11 @@ console.log(
     `ℹ️ Note: Every so often, run "npx create-vitest@latest" to update to the latest version. 🍆 `
   )
 );
-console.log("\n");
+console.log("");
+console.log(
+  chalk.bgWhite.bold("GitHub: https://github.com/dolanmiu/create-vitest")
+);
+console.log("");
 
 const {
   _: [fileName],
