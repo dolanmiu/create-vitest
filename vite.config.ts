@@ -1,10 +1,10 @@
 import { defineConfig } from "vitest/config";
 import { resolve } from "path";
-import dts from "vite-plugin-dts";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { Plugin } from "vite";
 import { nodePolyfills } from "vite-plugin-node-polyfills";
 import { builtinModules } from "module";
+import { node } from '@liuli-util/vite-plugin-node'
 
 export const addShebangPlugin = (): Plugin => ({
   name: "add-shebang",
@@ -20,9 +20,10 @@ export const addShebangPlugin = (): Plugin => ({
 
 export default defineConfig({
   plugins: [
-    dts(),
+    node({
+      entry: resolve(__dirname, "src/main.ts"),
+    }),
     tsconfigPaths(),
-    nodePolyfills(),
     addShebangPlugin(),
   ],
   build: {

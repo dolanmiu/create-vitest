@@ -7,7 +7,9 @@ import fs from "fs";
 import inquirer, { QuestionCollection } from "inquirer";
 import chalk from "chalk";
 
-console.log(chalk.green("Welcome to create vitest!"));
+console.log(chalk.bgBlueBright.bold("                                     "));
+console.log(chalk.bgBlueBright.bold("   🎉 Welcome to create vitest! 🎉   "));
+console.log(chalk.bgBlueBright.bold("                                      "));
 
 const {
   _: [fileName],
@@ -34,17 +36,18 @@ const questions: QuestionCollection[] = [
   {
     type: "confirm",
     name: "confirm",
-    message: `The path of the file is ${filePath}. Is this correct?`,
+    message: `The path of the file is "${filePath}". Is this correct?`,
   },
 ];
 
 const askQuestions = async () => {
   const answers = await inquirer.prompt<Answers>(questions);
-  const newFileName = `${fileNameWithoutExtension}.${answers.suffix}.${fileExtension}`;
+  const newFileName = `${fileNameWithoutExtension}.${answers.suffix}${fileExtension}`;
   console.log(chalk.green(`Generating ${newFileName}...`));
 
   const fileContent = fs.readFileSync(filePath, "utf-8");
-  await createTest(newFileName, fileContent);
+  const content = await createTest(newFileName, fileContent);
+  fs.promises.writeFile(path.join(process.cwd(), newFileName), content);
 };
 
 askQuestions();
