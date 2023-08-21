@@ -6,6 +6,9 @@ import { createTest } from "./core/create-test";
 import fs from "fs";
 import inquirer, { InputQuestion, QuestionCollection } from "inquirer";
 import chalk from "chalk";
+import { getFileProperties } from "./core/get-file-properties";
+import { InitialAnswers } from "./types";
+import { createPackageQuestions } from "./create-package-questions";
 
 console.log(chalk.bgBlueBright.bold("                                      "));
 console.log(chalk.bgBlueBright.bold("   🧪 Welcome to create vitest! 🏗️     "));
@@ -31,12 +34,6 @@ console.log("");
 const {
   _: [fileName],
 } = yargs(hideBin(process.argv)).argv as any;
-
-export type Answers = {
-  suffix: string;
-  confirm: boolean;
-  fileName?: string;
-};
 
 const questions: QuestionCollection[] = [
   ...(fileName
@@ -92,7 +89,7 @@ const questions: QuestionCollection[] = [
 ];
 
 const askQuestions = async () => {
-  const answers = await inquirer.prompt<Answers>(questions);
+  const answers = await inquirer.prompt<InitialAnswers>(questions);
 
   if (!fileName && !answers.fileName) {
     console.log(chalk.red("You must specify a file name!"));
@@ -104,10 +101,29 @@ const askQuestions = async () => {
     fileName ?? answers.fileName,
     answers.suffix
   );
-  console.log(chalk.green(`Generating ${newFileName}...`));
 
   const fileContent = fs.readFileSync(filePath, "utf-8");
-  const content = await createTest(newFileName, fileContent);
+  const filePayload = getFileProperties(newFileName, fileContent);
+
+  const moduleQuestions = createPackageQuestions(filePayload.imports);
+  const moduleAnswers =
+    await inquirer.prompt<Record<string, boolean>>(moduleQuestions);
+
+  const includeModules = new Set(
+    Object.entries(moduleAnswers)
+      .filter(([_, value]) => !!value)
+      .map(([packageName]) => packageName)
+  );
+
+  console.log(chalk.green(`Generating ${newFileName}...`));
+
+  const content = await createTest({
+    ...filePayload,
+    imports: filePayload.imports.filter((_, i) =>
+      includeModules.has(i.toString())
+    ),
+  });
+
   fs.promises.writeFile(
     path.join(process.cwd(), removePathPrefixFromCwd(filePath), newFileName),
     content
