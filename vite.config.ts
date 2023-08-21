@@ -2,8 +2,6 @@ import { defineConfig } from "vitest/config";
 import { resolve } from "path";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { Plugin } from "vite";
-import { nodePolyfills } from "vite-plugin-node-polyfills";
-import { builtinModules } from "module";
 import { node } from '@liuli-util/vite-plugin-node'
 
 export const addShebangPlugin = (): Plugin => ({
@@ -35,9 +33,6 @@ export default defineConfig({
       formats: ["es"],
     },
     outDir: resolve(__dirname, "dist"),
-    rollupOptions: {
-      external: [...builtinModules, /^node:/],
-    },
   },
   test: {
     coverage: {
