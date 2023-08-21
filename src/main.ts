@@ -47,14 +47,30 @@ const questions: QuestionCollection[] = [
           name: "fileName",
           message:
             "What is the name of the file you want to test? (Relative to current directory)",
-          validate: (input) => {
+          validate: async (input) => {
             if (input === "") {
               return "You must specify a file name!";
             }
 
-            if (!/^[a-zA-Z0-9-_]+\.tsx?$/.test(input)) {
+            if (!/^[a-zA-Z0-9-_/\\]+\.tsx?$/.test(input)) {
               return "The file name must end in .ts or .tsx";
             }
+
+            if (!fs.existsSync(path.join(process.cwd(), input))) {
+              return "The file does not exist!";
+            }
+
+            if (
+              fs.existsSync(
+                path.join(process.cwd(), getNewFileName(input, "spec"))
+              ) ||
+              fs.existsSync(
+                path.join(process.cwd(), getNewFileName(input, "test"))
+              )
+            ) {
+              return "A test file already exists for this file!";
+            }
+
             return true;
           },
         } as InputQuestion,
@@ -83,14 +99,19 @@ const askQuestions = async () => {
     process.exit(1);
   }
 
-  const { filePath, fileNameWithoutExtension, fileExtension } =
-    createFileDetails(fileName ?? answers.fileName);
-  const newFileName = `${fileNameWithoutExtension}.${answers.suffix}${fileExtension}`;
+  const { filePath } = createFileDetails(fileName ?? answers.fileName);
+  const newFileName = getNewFileName(
+    fileName ?? answers.fileName,
+    answers.suffix
+  );
   console.log(chalk.green(`Generating ${newFileName}...`));
 
   const fileContent = fs.readFileSync(filePath, "utf-8");
   const content = await createTest(newFileName, fileContent);
-  fs.promises.writeFile(path.join(process.cwd(), newFileName), content);
+  fs.promises.writeFile(
+    path.join(process.cwd(), removePathPrefixFromCwd(filePath), newFileName),
+    content
+  );
 };
 
 askQuestions();
@@ -111,4 +132,14 @@ const createFileDetails = (
     fileNameWithoutExtension,
     fileExtension,
   };
+};
+
+const getNewFileName = (fileName: string, suffix: string) => {
+  const { fileNameWithoutExtension, fileExtension } =
+    createFileDetails(fileName);
+  return `${fileNameWithoutExtension}.${suffix}${fileExtension}`;
+};
+
+const removePathPrefixFromCwd = (filePath: string) => {
+  return path.dirname(filePath).replace(process.cwd(), "");
 };
