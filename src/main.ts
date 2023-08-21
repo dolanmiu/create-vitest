@@ -9,6 +9,12 @@ import chalk from "chalk";
 import { getFileProperties } from "./core/get-file-properties";
 import { InitialAnswers } from "./types";
 import { createPackageQuestions } from "./create-package-questions";
+import {
+  checkIfTestFileExists,
+  createFileDetails,
+  getNewFileName,
+  removePathPrefixFromCwd,
+} from "./path-utils";
 
 console.log(chalk.bgBlueBright.bold("                                      "));
 console.log(chalk.bgBlueBright.bold("   🧪 Welcome to create vitest! 🏗️     "));
@@ -35,6 +41,27 @@ const {
   _: [fileName],
 } = yargs(hideBin(process.argv)).argv as any;
 
+if (fileName) {
+  if (!/^[a-zA-Z0-9-_/\\]+\.tsx?$/.test(fileName)) {
+    console.log(chalk.red("The file name must end in .ts or .tsx"));
+    process.exit(1);
+  }
+
+  if (!fs.existsSync(path.join(process.cwd(), fileName))) {
+    console.log(chalk.red("The file does not exist!"));
+    process.exit(1);
+  }
+
+  if (checkIfTestFileExists(fileName)) {
+    console.log(
+      chalk.red(
+        "A test file already exists for this file! Please delete the existing test file and try again."
+      )
+    );
+    process.exit(1);
+  }
+}
+
 const questions: QuestionCollection[] = [
   ...(fileName
     ? []
@@ -57,14 +84,7 @@ const questions: QuestionCollection[] = [
               return "The file does not exist!";
             }
 
-            if (
-              fs.existsSync(
-                path.join(process.cwd(), getNewFileName(input, "spec"))
-              ) ||
-              fs.existsSync(
-                path.join(process.cwd(), getNewFileName(input, "test"))
-              )
-            ) {
+            if (checkIfTestFileExists(input)) {
               return "A test file already exists for this file!";
             }
 
@@ -131,31 +151,3 @@ const askQuestions = async () => {
 };
 
 askQuestions();
-
-const createFileDetails = (
-  fileName: string
-): {
-  readonly filePath: string;
-  readonly fileNameWithoutExtension: string;
-  readonly fileExtension: string;
-} => {
-  const filePath = path.join(process.cwd(), fileName);
-  const fileNameWithoutExtension = path.parse(filePath).name;
-  const fileExtension = path.extname(filePath);
-
-  return {
-    filePath,
-    fileNameWithoutExtension,
-    fileExtension,
-  };
-};
-
-const getNewFileName = (fileName: string, suffix: string) => {
-  const { fileNameWithoutExtension, fileExtension } =
-    createFileDetails(fileName);
-  return `${fileNameWithoutExtension}.${suffix}${fileExtension}`;
-};
-
-const removePathPrefixFromCwd = (filePath: string) => {
-  return path.dirname(filePath).replace(process.cwd(), "");
-};
