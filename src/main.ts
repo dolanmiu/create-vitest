@@ -18,7 +18,7 @@ import {
 
 console.log(chalk.bgBlueBright.bold("                                      "));
 console.log(chalk.bgBlueBright.bold("   🧪 Welcome to create vitest! 🏗️     "));
-console.log(chalk.bgBlueBright("                  Made by Dolan       "));
+console.log(chalk.bgBlueBright("                      by Dolan        "));
 
 console.log("");
 console.log(
