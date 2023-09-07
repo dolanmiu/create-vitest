@@ -3,6 +3,7 @@ import { ParsePayload } from "./types/parse-payload";
 import { handleImport } from "./handlers/handle-import";
 import { handlePropertyAccessExpression } from "./handlers/handle-property-access-expression";
 import { handleVariableStatement } from "./handlers/handle-variable-statement";
+import { handleExportSpecifier } from "./handlers/export-specifier";
 
 // import {
 //   handleAccessModifier,
@@ -127,6 +128,9 @@ export const traverse = (
     //   return handleNewExpression(node);
     case SyntaxKind.ImportDeclaration:
       parsePayload = handleImport(node, parsePayload);
+      break;
+    case SyntaxKind.ExportSpecifier:
+      parsePayload = handleExportSpecifier(node, parsePayload);
       break;
   }
   //   console.log(node.getKindName());
