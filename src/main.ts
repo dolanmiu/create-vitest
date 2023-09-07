@@ -6,6 +6,9 @@ import { createTest } from "./core/create-test";
 import fs from "fs";
 import inquirer, { InputQuestion, QuestionCollection } from "inquirer";
 import chalk from "chalk";
+import latestVersion from "latest-version";
+import packageJson from "../package.json" assert { type: "json" };
+
 import { getFileProperties } from "./core/get-file-properties";
 import { InitialAnswers } from "./types";
 import { createPackageQuestions } from "./create-package-questions";
@@ -16,8 +19,12 @@ import {
   removePathPrefixFromCwd,
 } from "./path-utils";
 
-console.log(chalk.bgBlueBright.black.bold("                                      "));
-console.log(chalk.bgBlueBright.black.bold("   🧪 Welcome to create vitest! 🏗️     "));
+console.log(
+  chalk.bgBlueBright.black.bold("                                      ")
+);
+console.log(
+  chalk.bgBlueBright.black.bold("   🧪 Welcome to create vitest! 🏗️     ")
+);
 console.log(chalk.bgBlueBright.black("                      by Dolan        "));
 
 console.log("");
@@ -28,9 +35,18 @@ console.log(
 );
 console.log(
   chalk.blue(
-    `ℹ️ Note: Every so often, run "npx create-vitest@latest" to update to the latest version. 🍆 `
+    `ℹ️ Note: Every so often, run "npm create vitest@latest" or "npx create-vitest@latest" to update to the latest version. 🍆 `
   )
 );
+try {
+  console.log(
+    chalk.blue(
+      `ℹ️ Current version: ${
+        packageJson.version
+      }. Latest version: ${await latestVersion("create-vitest")}.`
+    )
+  );
+} catch {}
 console.log("");
 console.log(
   chalk.bgWhite.bold("GitHub: https://github.com/dolanmiu/create-vitest")
@@ -123,7 +139,11 @@ const askQuestions = async () => {
   );
 
   const fileContent = fs.readFileSync(filePath, "utf-8");
-  const filePayload = getFileProperties(newFileName, fileContent, fileName ?? answers.fileName);
+  const filePayload = getFileProperties(
+    newFileName,
+    fileContent,
+    fileName ?? answers.fileName
+  );
 
   const moduleQuestions = createPackageQuestions(filePayload.imports);
   const moduleAnswers =
