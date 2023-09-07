@@ -7,7 +7,7 @@ import fs from "fs";
 import inquirer, { InputQuestion, QuestionCollection } from "inquirer";
 import chalk from "chalk";
 import latestVersion from "latest-version";
-import packageJson from "../package.json" assert { type: "json" };
+import { version } from "../package.json" assert { type: "json" };
 
 import { getFileProperties } from "./core/get-file-properties";
 import { InitialAnswers } from "./types";
@@ -41,9 +41,9 @@ console.log(
 try {
   console.log(
     chalk.blue(
-      `ℹ️ Current version: ${
-        packageJson.version
-      }. Latest version: ${await latestVersion("create-vitest")}.`
+      `ℹ️ Current version: ${version}. Latest version: ${await latestVersion(
+        "create-vitest"
+      )}.`
     )
   );
 } catch {}
