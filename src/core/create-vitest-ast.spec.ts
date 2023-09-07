@@ -56,10 +56,11 @@ describe("createVitestAst", () => {
         viDefault: new Set(["awesome"]),
       },
       exports: [],
+      fileName: "my-file.ts",
     });
 
     expect(output.getFullText())
-      .toEqual(`import { vi, describe, it, expect, afterAll, beforeAll } from "vitest";
+      .toEqual(`import { vi, describe, it, expect, afterAll } from "vitest";
 
 vi.mock("path", () => ({
     default: {

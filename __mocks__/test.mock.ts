@@ -14,7 +14,7 @@ describe("createTest", () => {
   });
 
   it("should work", async () => {
-    expect(true).toBe(true);
+    expect(true).toEqual(true);
   });
 });
 
@@ -24,7 +24,7 @@ describe("createAwesome", () => {
   });
 
   it("should work", async () => {
-    expect(true).toBe(true);
+    expect(true).toEqual(true);
   });
 });
 `;

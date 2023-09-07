@@ -7,7 +7,11 @@ import { getFileProperties } from "./get-file-properties";
 
 describe("getFileProperties", () => {
   it("should create test properties", async () => {
-    const output = getFileProperties("test.spec.ts", GET_CONFIG_MOCK);
+    const output = getFileProperties(
+      "test.spec.ts",
+      GET_CONFIG_MOCK,
+      "test.ts"
+    );
 
     expect(output).toEqual({
       imports: [
@@ -62,13 +66,15 @@ describe("getFileProperties", () => {
         viDefault: new Set(["awesome"]),
       },
       exports: ["getPostCssConfig", "postCssPluginsToArray"],
+      fileName: "test.ts",
     });
   });
 
   it("should create test properties with single export", async () => {
     const output = getFileProperties(
       "test.spec.ts",
-      REMOVE_CONSTRUCTOR_ASSIGNMENT_MOCK
+      REMOVE_CONSTRUCTOR_ASSIGNMENT_MOCK,
+      "test.ts",
     );
 
     expect(output).toEqual({
@@ -105,6 +111,7 @@ describe("getFileProperties", () => {
         node: new Set(["getKind", "getParent", "getType"]),
         sourceFile: new Set(["forEachDescendant", "getText"]),
       },
+      fileName: "test.ts",
     });
   });
 });

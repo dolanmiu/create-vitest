@@ -57,10 +57,11 @@ describe("createTest", () => {
         viDefault: new Set(["awesome"]),
       },
       exports: ["getPostCssConfig", "postCssPluginsToArray"],
+      fileName: "test.ts",
     });
 
     expect(output)
-      .toEqual(`import { vi, describe, it, expect, afterAll, beforeAll } from "vitest";
+      .toEqual(`import { vi, describe, it, expect, afterAll } from "vitest";
 
 vi.mock("path", () => ({
   default: {
@@ -93,14 +94,14 @@ describe("my-awesome-tests", () => {
   });
 
   describe("getPostCssConfig", () => {
-    it("should work", () => {
-      expect(true).toBe(true);
+    it("should work", async () => {
+      expect(true).toEqual(true);
     });
   });
 
   describe("postCssPluginsToArray", () => {
-    it("should work", () => {
-      expect(true).toBe(true);
+    it("should work", async () => {
+      expect(true).toEqual(true);
     });
   });
 });
@@ -142,10 +143,11 @@ describe("my-awesome-tests", () => {
         node: new Set(["getKind", "getParent", "getType"]),
         sourceFile: new Set(["forEachDescendant", "getText"]),
       },
+      fileName: "test.ts",
     });
 
     expect(output)
-      .toEqual(`import { vi, describe, it, expect, afterAll, beforeAll } from "vitest";
+      .toEqual(`import { vi, describe, it, expect, afterAll } from "vitest";
 
 vi.mock("ts-morph", () => ({
   ClassDeclaration: vi.fn(),
@@ -166,8 +168,8 @@ describe("removeConstructorAssignment", () => {
     vi.resetAllMocks();
   });
 
-  it("should work", () => {
-    expect(true).toBe(true);
+  it("should work", async () => {
+    expect(true).toEqual(true);
   });
 });
 `);

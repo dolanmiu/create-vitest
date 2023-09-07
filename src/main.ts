@@ -16,9 +16,9 @@ import {
   removePathPrefixFromCwd,
 } from "./path-utils";
 
-console.log(chalk.bgBlueBright.bold("                                      "));
-console.log(chalk.bgBlueBright.bold("   🧪 Welcome to create vitest! 🏗️     "));
-console.log(chalk.bgBlueBright("                      by Dolan        "));
+console.log(chalk.bgBlueBright.black.bold("                                      "));
+console.log(chalk.bgBlueBright.black.bold("   🧪 Welcome to create vitest! 🏗️     "));
+console.log(chalk.bgBlueBright.black("                      by Dolan        "));
 
 console.log("");
 console.log(
@@ -76,7 +76,7 @@ const questions: QuestionCollection[] = [
               return "You must specify a file name!";
             }
 
-            if (!/^[a-zA-Z0-9-_/\\]+\.tsx?$/.test(input)) {
+            if (!/^[.a-zA-Z0-9-_/\\]+\.tsx?$/.test(input)) {
               return "The file name must end in .ts or .tsx";
             }
 
@@ -123,7 +123,7 @@ const askQuestions = async () => {
   );
 
   const fileContent = fs.readFileSync(filePath, "utf-8");
-  const filePayload = getFileProperties(newFileName, fileContent);
+  const filePayload = getFileProperties(newFileName, fileContent, fileName ?? answers.fileName);
 
   const moduleQuestions = createPackageQuestions(filePayload.imports);
   const moduleAnswers =

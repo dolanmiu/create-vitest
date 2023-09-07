@@ -3,7 +3,8 @@ import { Project, Node, StructureKind } from "ts-morph";
 import { AggregateImport, ParsePayload } from "./ast/types/parse-payload";
 
 export type DeDupedParsePayload = Omit<ParsePayload, "imports"> & {
-  imports: readonly AggregateImport[];
+  readonly imports: readonly AggregateImport[];
+  readonly fileName: string;
 };
 
 export const createVitestAst = (payload: DeDupedParsePayload): Node => {
@@ -20,9 +21,16 @@ export const createVitestAst = (payload: DeDupedParsePayload): Node => {
           "it",
           "expect",
           "afterAll",
-          "beforeAll",
+          // "beforeAll",
         ],
       },
+      // TODO: Later feature
+      // Difficult right now because of node module resolution
+      // {
+      //   kind: StructureKind.ImportDeclaration,
+      //   moduleSpecifier: `./${payload.fileName.replace(/\.tsx?$/, "")}`,
+      //   namedImports: [...payload.exports],
+      // },
       "\n",
       ...payload.imports.map(
         (i) =>
@@ -42,8 +50,8 @@ export const createVitestAst = (payload: DeDupedParsePayload): Node => {
     ${payload.exports
       .map(
         (e) => `describe("${e}", () => {
-      it("should work", () => {
-        expect(true).toBe(true);
+      it("should work", async () => {
+        expect(true).toEqual(true);
       });
     });`
       )
@@ -56,8 +64,8 @@ export const createVitestAst = (payload: DeDupedParsePayload): Node => {
       vi.resetAllMocks();
     });
 
-    it("should work", () => {
-      expect(true).toBe(true);
+    it("should work", async () => {
+      expect(true).toEqual(true);
     });
   });`
             )
