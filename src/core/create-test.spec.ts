@@ -61,7 +61,7 @@ describe("createTest", () => {
     });
 
     expect(output)
-      .toEqual(`import { vi, describe, it, expect, afterAll } from "vitest";
+      .toEqual(`import { vi, describe, it, expect, afterAll, vitest } from "vitest";
 
 vi.mock("path", () => ({
   default: {
@@ -147,7 +147,7 @@ describe("my-awesome-tests", () => {
     });
 
     expect(output)
-      .toEqual(`import { vi, describe, it, expect, afterAll } from "vitest";
+      .toEqual(`import { vi, describe, it, expect, afterAll, vitest } from "vitest";
 
 vi.mock("ts-morph", () => ({
   ClassDeclaration: vi.fn(),

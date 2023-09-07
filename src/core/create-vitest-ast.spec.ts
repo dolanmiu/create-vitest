@@ -60,7 +60,7 @@ describe("createVitestAst", () => {
     });
 
     expect(output.getFullText())
-      .toEqual(`import { vi, describe, it, expect, afterAll } from "vitest";
+      .toEqual(`import { vi, describe, it, expect, afterAll, vitest } from "vitest";
 
 vi.mock("path", () => ({
     default: {

@@ -145,15 +145,25 @@ const askQuestions = async () => {
     fileName ?? answers.fileName
   );
 
-  const moduleQuestions = createPackageQuestions(filePayload.imports);
+  const moduleQuestions = createPackageQuestions(filePayload);
   const moduleAnswers =
     await inquirer.prompt<Record<string, boolean>>(moduleQuestions);
 
-  const includeModules = new Set(
-    Object.entries(moduleAnswers)
-      .filter(([_, value]) => !!value)
-      .map(([packageName]) => packageName)
+  const trueModuleAnswers = Object.entries(moduleAnswers).filter(
+    ([_, value]) => !!value
   );
+
+  const includeModules = new Set(
+    trueModuleAnswers
+      .map(([packageName]) => packageName)
+      .filter((packageName) => !packageName.endsWith("-local"))
+  );
+
+  // const includeLocalModules = new Set(
+  //   trueModuleAnswers
+  //     .map(([packageName]) => packageName)
+  //     .filter((packageName) => packageName.endsWith("-local"))
+  // );
 
   console.log(chalk.green(`Generating ${newFileName}...`));
 

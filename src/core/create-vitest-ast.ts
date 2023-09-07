@@ -21,6 +21,7 @@ export const createVitestAst = (payload: DeDupedParsePayload): Node => {
           "it",
           "expect",
           "afterAll",
+          "vitest",
           // "beforeAll",
         ],
       },
