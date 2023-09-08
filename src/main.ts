@@ -10,7 +10,7 @@ import latestVersion from "latest-version";
 import { version } from "../package.json" assert { type: "json" };
 
 import { getFileProperties } from "./core/get-file-properties";
-import { InitialAnswers } from "./types";
+import { InitialAnswers, ModuleMockAnswers } from "./types";
 import { createPackageQuestions } from "./create-package-questions";
 import {
   checkIfTestFileExists,
@@ -18,6 +18,7 @@ import {
   getNewFileName,
   removePathPrefixFromCwd,
 } from "./path-utils";
+import { SpyOnMockConfig } from "./core/create-vitest-ast";
 
 console.log(
   chalk.bgBlueBright.black.bold("                                      ")
@@ -149,29 +150,51 @@ const askQuestions = async () => {
   const moduleAnswers =
     await inquirer.prompt<Record<string, boolean>>(moduleQuestions);
 
-  const trueModuleAnswers = Object.entries(moduleAnswers).filter(
-    ([_, value]) => !!value
+  const trueModuleAnswers = Object.entries(moduleAnswers)
+    .map(([key, value]) => {
+      // key can be "0" or "0-local" or "0-named_import:describe" or "0-property:key"
+      // get the index
+      const index = parseInt(key.split("-")[0]);
+      const myImport = filePayload.imports[index];
+
+      // get the named_import or property
+      const [, namedImport] = key.split("-named_import:");
+      const [, property] = key.split("-property:");
+      const [, defaultProperty] = key.split("-default_property:");
+      return {
+        packageName: myImport.packageName,
+        value,
+        type: !!(namedImport ?? property) ? "named_import" : !!defaultProperty ? "default" : "root",
+        property: (namedImport ?? property ?? defaultProperty) as string | undefined,
+      } as ModuleMockAnswers;
+    })
+    .filter(({ value }) => !!value);
+
+  const includePackages = new Set(
+    trueModuleAnswers.map(({ packageName }) => packageName)
   );
 
-  const includeModules = new Set(
-    trueModuleAnswers
-      .map(([packageName]) => packageName)
-      .filter((packageName) => !packageName.endsWith("-local"))
-  );
+  const namedImportMocks: SpyOnMockConfig[] = trueModuleAnswers
+    .filter(({ property }) => !!property)
+    .filter(({ type }) => type === "named_import")
+    .map((o) => o as SpyOnMockConfig);
 
-  // const includeLocalModules = new Set(
-  //   trueModuleAnswers
-  //     .map(([packageName]) => packageName)
-  //     .filter((packageName) => packageName.endsWith("-local"))
-  // );
+  const defaultMocks: SpyOnMockConfig[] = trueModuleAnswers
+    .filter(({ property }) => !!property)
+    .filter(({ type }) => type === "default")
+    .map((o) => o as SpyOnMockConfig);
 
   console.log(chalk.green(`Generating ${newFileName}...`));
 
   const content = await createTest({
     ...filePayload,
-    imports: filePayload.imports.filter((_, i) =>
-      includeModules.has(i.toString())
+    imports: filePayload.imports.filter((i) =>
+      includePackages.has(i.packageName)
     ),
+    localMocks: {
+      namedImportMocks,
+      defaultMocks,
+    },
   });
 
   fs.promises.writeFile(

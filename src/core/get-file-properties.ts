@@ -8,7 +8,7 @@ export const getFileProperties = (
   specFilePath: string,
   content: string,
   originalFilePath: string
-): DeDupedParsePayload => {
+): Omit<DeDupedParsePayload, "localMocks"> => {
   const project = new Project({
     compilerOptions: {
       target: ScriptTarget.ESNext,
@@ -22,7 +22,7 @@ export const getFileProperties = (
     exports: [],
   });
 
-  const deDupedPayload: DeDupedParsePayload = {
+  const deDupedPayload: Omit<DeDupedParsePayload, "localMocks"> = {
     ...payload,
     fileName: path.basename(originalFilePath),
     imports: aggregateImports(payload.imports),

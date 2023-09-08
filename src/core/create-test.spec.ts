@@ -58,10 +58,14 @@ describe("createTest", () => {
       },
       exports: ["getPostCssConfig", "postCssPluginsToArray"],
       fileName: "test.ts",
+      localMocks: {
+        namedImportMocks: [],
+        defaultMocks: [],
+      },
     });
 
     expect(output)
-      .toEqual(`import { vi, describe, it, expect, afterAll, vitest } from "vitest";
+      .toEqual(`import { vi, describe, it, expect, afterAll, vitest, afterEach } from "vitest";
 
 vi.mock("path", () => ({
   default: {
@@ -91,6 +95,10 @@ vi.mock("module-name", () => ({}));
 describe("my-awesome-tests", () => {
   afterAll(() => {
     vi.resetAllMocks();
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
   });
 
   describe("getPostCssConfig", () => {
@@ -144,10 +152,14 @@ describe("my-awesome-tests", () => {
         sourceFile: new Set(["forEachDescendant", "getText"]),
       },
       fileName: "test.ts",
+      localMocks: {
+        namedImportMocks: [],
+        defaultMocks: [],
+      },
     });
 
     expect(output)
-      .toEqual(`import { vi, describe, it, expect, afterAll, vitest } from "vitest";
+      .toEqual(`import { vi, describe, it, expect, afterAll, vitest, afterEach } from "vitest";
 
 vi.mock("ts-morph", () => ({
   ClassDeclaration: vi.fn(),
@@ -166,6 +178,10 @@ vi.mock("./util", () => ({
 describe("removeConstructorAssignment", () => {
   afterAll(() => {
     vi.resetAllMocks();
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
   });
 
   it("should work", async () => {

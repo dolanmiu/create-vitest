@@ -2,9 +2,18 @@ import { Project, Node, StructureKind } from "ts-morph";
 
 import { AggregateImport, ParsePayload } from "./ast/types/parse-payload";
 
+export type SpyOnMockConfig = {
+  readonly packageName: string;
+  readonly property: string;
+};
+
 export type DeDupedParsePayload = Omit<ParsePayload, "imports"> & {
   readonly imports: readonly AggregateImport[];
   readonly fileName: string;
+  readonly localMocks: {
+    readonly namedImportMocks: readonly SpyOnMockConfig[];
+    readonly defaultMocks: readonly SpyOnMockConfig[];
+  };
 };
 
 export const createVitestAst = (payload: DeDupedParsePayload): Node => {
@@ -22,6 +31,7 @@ export const createVitestAst = (payload: DeDupedParsePayload): Node => {
           "expect",
           "afterAll",
           "vitest",
+          "afterEach",
           // "beforeAll",
         ],
       },
@@ -48,10 +58,17 @@ export const createVitestAst = (payload: DeDupedParsePayload): Node => {
       vi.resetAllMocks();
     });
 
+    afterEach(() => {
+      vi.clearAllMocks();
+    });
+
     ${payload.exports
       .map(
         (e) => `describe("${e}", () => {
       it("should work", async () => {
+        ${payload.localMocks.namedImportMocks.map(createSpyOnNamedImportMockObject).join("\n")}
+        ${payload.localMocks.defaultMocks.map(createSpyOnDefaultMockObject).join("\n")}
+
         expect(true).toEqual(true);
       });
     });`
@@ -65,7 +82,14 @@ export const createVitestAst = (payload: DeDupedParsePayload): Node => {
       vi.resetAllMocks();
     });
 
+    afterEach(() => {
+      vi.clearAllMocks();
+    });
+
     it("should work", async () => {
+      ${payload.localMocks.namedImportMocks.map(createSpyOnNamedImportMockObject).join("\n")}
+      ${payload.localMocks.defaultMocks.map(createSpyOnDefaultMockObject).join("\n")}
+
       expect(true).toEqual(true);
     });
   });`
@@ -123,4 +147,12 @@ const createImportObject = (
       }),
       {}
     );
+};
+
+const createSpyOnNamedImportMockObject = (spyOnConfig: SpyOnMockConfig): string => {
+  return `vi.spyOn(await import("${spyOnConfig.packageName}"), "${spyOnConfig.property}").mockReturnValue(undefined);`;
+};
+
+const createSpyOnDefaultMockObject = (spyOnConfig: SpyOnMockConfig): string => {
+  return `vi.spyOn((await import("${spyOnConfig.packageName}")).default, "${spyOnConfig.property}").mockReturnValue(undefined);`;
 };

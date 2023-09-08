@@ -57,10 +57,14 @@ describe("createVitestAst", () => {
       },
       exports: [],
       fileName: "my-file.ts",
+      localMocks: {
+        namedImportMocks: [],
+        defaultMocks: [],
+      },
     });
 
     expect(output.getFullText())
-      .toEqual(`import { vi, describe, it, expect, afterAll, vitest } from "vitest";
+      .toEqual(`import { vi, describe, it, expect, afterAll, vitest, afterEach } from "vitest";
 
 vi.mock("path", () => ({
     default: {
