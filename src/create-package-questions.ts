@@ -12,7 +12,7 @@ export const createPackageQuestions = ({
       const globalMockQuestion: QuestionCollection = {
         type: "confirm",
         name: i.toString(), // index hack because inquirer doesn't support file path as name
-        message: `Do you want to mock "${importStatement.packageName}"?`,
+        message: `Do you want to mock "${importStatement.packageName}"? (If this package only has types, you can skip this)`,
         default: true,
       };
 
